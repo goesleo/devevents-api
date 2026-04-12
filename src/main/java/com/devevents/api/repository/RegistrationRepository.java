@@ -1,0 +1,15 @@
+package com.devevents.api.repository;
+
+import com.devevents.api.model.Registration;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+import java.util.List;
+
+@Repository
+public interface RegistrationRepository extends JpaRepository<Registration, UUID> {
+    List<Registration> findAllByEventId(UUID eventId);
+
+    boolean existsByEventIdAndParticipantId(UUID eventId, UUID participantId);
+}
