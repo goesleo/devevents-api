@@ -12,6 +12,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class RegistrationService {
@@ -51,5 +54,18 @@ public class RegistrationService {
         Registration savedRegistration = registrationRepository.save(registration);
 
         return new RegistrationResponseDTO(savedRegistration);
+    }
+
+    public List<RegistrationResponseDTO> getEventRegistrations(UUID eventId) {
+        // Verifica se o evento existe antes de buscar (boa prática)
+        if (!eventRepository.existsById(eventId)) {
+            throw new IllegalArgumentException("Evento não encontrado.");
+        }
+
+        // Busca a lista de inscrições, transforma cada uma em um DTO e devolve como uma Lista
+        return registrationRepository.findAllByEventId(eventId)
+                .stream()
+                .map(RegistrationResponseDTO::new) // Nosso DTO já sabe como se construir a partir da Entidade
+                .toList();
     }
 }
